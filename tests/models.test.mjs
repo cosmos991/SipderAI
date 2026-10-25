@@ -23,3 +23,7 @@ test('failed discovery returns an explicit warning and only the default model',a
  delete process.env.OPENAI_MODELS;process.env.OPENAI_API_KEY='test-key-failed';process.env.OPENAI_MODEL='gpt-5-mini';globalThis.fetch=async()=>new Response(null,{status:401});
  try{const result=await modelCatalog();assert.deepEqual(result.models,[{id:'gpt-5-mini',name:'gpt-5-mini'}]);assert.ok(result.warning);}finally{globalThis.fetch=realFetch;for(const key of ['OPENAI_MODEL','OPENAI_MODELS','OPENAI_API_KEY']){if(original[key]===undefined)delete process.env[key];else process.env[key]=original[key];}}
 });
+test('Astra, Sol, Luna and Terra aliases are discoverable',()=>{
+ const ids=chatModelIds(['gpt-6-astra','gpt-6.1-sol','gpt-6-sol','gpt-6-luna','gpt-5.6-sol','gpt-5.6-terra'].map(id=>({id})));
+ assert.equal(ids.length,6);assert.ok(ids.includes('gpt-6-astra'));assert.ok(ids.includes('gpt-6.1-sol'));
+});
